@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.mapper.RoleInfoMapper">
+
+    <select id="getRoleByUserId" resultType="com.qf.dto.RoleInfoDto" parameterType="int">
+        select r.*,u.userId from userinfo u right join user_role ur on ur.userId = u.userId
+        right join roleinfo r on ur.roleId = r.roleId
+        and ur.`status`=1
+        and u.`status` = 1 and u.userId = #{userId}
+    </select>
+
+    <!--查询ur表是否存在对应角色-->
+    <select id="getRoleIsExist" parameterType="Map" resultType="int">
+    select count(1) from user_role where userId = #{userId} and roleId = #{checkId}
+</select>
+
+    <!--添加角色-->
+    <insert id="addRole" parameterType="Map">
+    insert into user_role(userId,roleId) values (#{userId},#{checkId})
+</insert>
+
+    <!--修改Status-->
+    <update id="updateStatus" parameterType="Map">
+        update user_role set
+        <if test="val == 1">
+            status = 1
+        </if>
+        <if test="val == 2">
+            status = 0
+        </if>
+        where userId = #{userId} and roleId = #{checkId}
+    </update>
+
+    <!--查询所有角色-->
+    <select id="selectAllRole" parameterType="com.qf.pojo.RoleInfo" resultType="com.qf.pojo.RoleInfo">
+        select * from roleInfo
+    </select>
+</mapper>
